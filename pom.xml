@@ -1,0 +1,107 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.fenergo.fdim</groupId>
+  <artifactId>datagen</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>datagen</name>
+  <url>http://fenergo.com</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jdk.version>1.8</jdk.version>
+    <main.class>com.fenergo.fdim.datagen.App</main.class>
+    <maven.assembly.plugin.version>2.6</maven.assembly.plugin.version>
+    <exec.maven.plugin.version>1.5.0</exec.maven.plugin.version>
+    <junit.version>4.12</junit.version>
+    <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
+    <reflections.version>0.9.10</reflections.version>
+    <guava.version>19.0</guava.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.reflections</groupId>
+    	<artifactId>reflections</artifactId>
+    	<version>${reflections.version}</version>
+	</dependency>
+	<dependency>
+	    <groupId>com.google.guava</groupId>
+	    <artifactId>guava</artifactId>
+	    <version>${guava.version}</version>
+	</dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+    
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven.compiler.plugin.version}</version>
+        <configuration>
+          <source>${jdk.version}</source>
+          <target>${jdk.version}</target>
+        </configuration>
+      </plugin>
+    
+	  <plugin>
+	    <groupId>org.apache.maven.plugins</groupId>
+    	<artifactId>maven-assembly-plugin</artifactId>
+    	<version>${maven.assembly.plugin.version}</version>
+	    <configuration>
+	      <archive>
+	        <manifest>
+	          <mainClass>${main.class}</mainClass>
+	        </manifest>
+	      </archive>
+	      <descriptorRefs>
+	        <descriptorRef>jar-with-dependencies</descriptorRef>
+	      </descriptorRefs>
+	    </configuration>
+	  </plugin>
+	    
+	  <plugin>
+  		<groupId>org.codehaus.mojo</groupId>
+  		<artifactId>exec-maven-plugin</artifactId>
+  	    <version>${exec.maven.plugin.version}</version>
+  	    <executions>
+          <execution>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
+        </executions>
+  		<configuration>
+    	  <mainClass>${main.class}</mainClass>
+          <arguments>
+          	<argument>C:\Users\User\Desktop\output.xml</argument>
+          	<argument>25000</argument> 	<!-- LE -->
+          	<argument>1000</argument>  	<!-- User -->
+          	<argument>25000</argument> 	<!-- Lookup -->
+          	<argument>1</argument> 		<!-- Address -->
+          	<argument>1</argument> 		<!-- Contact -->
+          	<argument>1</argument> 		<!-- Associations -->
+          	<argument>1</argument> 		<!-- Relationships -->
+          </arguments>
+          <systemProperties>
+            <systemProperty>
+                <key>file.encoding</key>
+                <value>UTF-8</value>
+            </systemProperty>
+          </systemProperties>
+  		</configuration>
+      </plugin>
+	</plugins>
+  </build>
+  
+</project>

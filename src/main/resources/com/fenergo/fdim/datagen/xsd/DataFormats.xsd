@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<!---->
+	<!-- INTERNAL DATA TYPES -->
+	<!---->
+	<!---->
+	<xs:simpleType name="StatusTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Registered"/>
+			<xs:enumeration value="Correspondence"/>
+			<xs:enumeration value="Residential"/>
+			<xs:enumeration value="Other"/>
+			<xs:enumeration value="Trading"/>
+			<xs:enumeration value="Property"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- ENUM for AddressType Values-->
+	<xs:simpleType name="AddressTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Registered"/>
+			<xs:enumeration value="Correspondence"/>
+			<xs:enumeration value="Residential"/>
+			<xs:enumeration value="Other"/>
+			<xs:enumeration value="Trading"/>
+			<xs:enumeration value="Property"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!-- ENUM for Country Values-->
+	<xs:simpleType name="CountryEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Ireland"/>
+			<xs:enumeration value="Portugal"/>
+			<xs:enumeration value="UK"/>
+			<xs:enumeration value="USA"/>
+			<xs:enumeration value="Spain"/>
+			<xs:enumeration value="Hungary"/>
+			<xs:enumeration value="Czech Republic"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--STRING Text :: 1024char max.-->
+	<xs:simpleType name="TextTypeMax1024Char">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="1024"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--STRING Text :: 256char max.-->
+	<xs:simpleType name="TextTypeMax256Char">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="256"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--STRING Text :: 200char max.-->
+	<xs:simpleType name="TextTypeMax200Char">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="200"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--STRING Text :: 50char max.-->
+	<xs:simpleType name="TextTypeMax50Char">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="0"/>
+			<xs:maxLength value="50"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<!--INTEGER Text OR Empty String -->
+	<xs:simpleType name="OptionalInteger">
+		<xs:union>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:length value="0"/>
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType>
+				<xs:restriction base="xs:integer"/>
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
+</xs:schema>

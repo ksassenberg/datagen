@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:include schemaLocation="EntityAttributes.xsd"/>
+	<!-- ROOT Element -->
+	<!-- FENERGO RESPONSE Element -->
+	<xs:element name="fenergoInput" type="FenergoInputType"/>
+	<xs:complexType name="FenergoInputType">
+		<xs:sequence>
+			<xs:element name="entity" type="AbstractBaseInputEntityType" minOccurs="1" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<!---->
+	<!-- ABSTRACT TYPE to be used at the 'entity' element. -->
+	<xs:complexType name="LegalEntity">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="LegalEntityAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="User">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="UserAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Lookup">
+		<xs:complexContent>
+			<xs:extension base="AbstractBaseInputEntityType">
+				<xs:attributeGroup ref="LookupAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Address">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="AddressAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Contact">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="ContactAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ContactAddress">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="ContactAddressAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Product">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="ProductAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RoleGroup">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="RoleGroupAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Case">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="CaseAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LERole">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="LERoleAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SSI">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="SSIAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TradingAgreement">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="TradingAgreementAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Association">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="AssociationAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Document">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="DocumentAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Relationship">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="RelationshipAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Account">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="AccountAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="FATCATAX">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="FATCATAXAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DoddFrank">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="DoddFrankAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="APAC">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="APACAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MiFID">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="MiFIDAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EMIR">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="EMIRAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CanadianFIU">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="CanadianFIUAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MexicanDrivatives">
+		<xs:complexContent>
+			<xs:extension base="AbstractInputEntityType">
+				<xs:attributeGroup ref="MexicanDrivativesAttrGroup"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractInputEntityType" abstract="true">
+		<xs:complexContent>
+			<xs:extension base="AbstractBaseInputEntityType">
+				<xs:attribute name="ExternalReferenceId" type="xs:string" use="required"/>
+				<xs:attribute name="ExternalSourceId" type="xs:string" use="optional" default="FENERGO"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AbstractBaseInputEntityType" abstract="true">
+		<xs:attribute name="ReferenceKey" type="xs:string" use="required"/>
+		<xs:anyAttribute processContents="skip"/>
+	</xs:complexType>
+</xs:schema>
