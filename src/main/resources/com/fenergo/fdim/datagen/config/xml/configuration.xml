@@ -28,7 +28,7 @@
 			      	<tns:occurences>1</tns:occurences>
 			 	</tns:child_entity>
   			</tns:child_entities>
-    	</tns:root_entity>
+		</tns:root_entity>
 		<tns:root_entity>
   			<tns:type>User</tns:type>
   			<tns:occurences>1000</tns:occurences>
