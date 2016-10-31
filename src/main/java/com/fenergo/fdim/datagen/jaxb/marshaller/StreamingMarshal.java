@@ -2,6 +2,7 @@ package com.fenergo.fdim.datagen.jaxb.marshaller;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Writer;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;

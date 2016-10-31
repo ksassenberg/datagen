@@ -30,9 +30,12 @@ public class Config {
     public static final String TEMPLATES_PACKAGE = "com.fenergo.fdim.datagen.templates";
     public static final String WRAPPER_ELEMENT = "fenergoInput";
     public final static QName _ENTITY_QNAME = new QName(XMLConstants.NULL_NS_URI, "entity");
+    public final static int ROOT_THREAD_POOL_SIZE = 5;
     
     private final static String CONFIG_FILE_ARG_NAME = "configfile";
-    private final static String ARG_SEPARATOR = "-"; 
+    private final static String ARG_SEPARATOR = "-";
+    
+    
     
     private Map<String, Map<String, String[]>> templates = new HashMap<>();
     private Map<String, Map<String, String>> setters = new HashMap<>();

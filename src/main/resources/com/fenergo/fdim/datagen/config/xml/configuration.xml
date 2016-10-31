@@ -9,7 +9,7 @@
 	<tns:root_entities>
 		<tns:root_entity>
 			<tns:type>LegalEntity</tns:type>
-			<tns:occurences>10</tns:occurences>
+			<tns:occurences>10000</tns:occurences>
 			<tns:child_entities>
 				<tns:child_entity>
 					<tns:type>Contact</tns:type>
@@ -31,11 +31,11 @@
     	</tns:root_entity>
 		<tns:root_entity>
   			<tns:type>User</tns:type>
-  			<tns:occurences>10</tns:occurences>
+  			<tns:occurences>1000</tns:occurences>
 		</tns:root_entity>
 		<tns:root_entity>
   			<tns:type>Lookup</tns:type>
-  			<tns:occurences>10</tns:occurences>
+  			<tns:occurences>10000</tns:occurences>
 		</tns:root_entity>
   	</tns:root_entities>
 </tns:Configuration>
