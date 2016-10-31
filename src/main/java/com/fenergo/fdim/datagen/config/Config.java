@@ -4,14 +4,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
+
+import org.reflections.Reflections;
 
 import com.fenergo.fdim.datagen.jaxb.config.ChildEntityType;
 import com.fenergo.fdim.datagen.jaxb.config.ConfigurationType;
@@ -31,6 +35,8 @@ public class Config {
     private final static String ARG_SEPARATOR = "-"; 
     
     private Map<String, Map<String, String[]>> templates = new HashMap<>();
+    private Map<String, Map<String, String>> setters = new HashMap<>();
+    
     private String filename;
     private Long batchSize;
     private Long numLegalEntity;
@@ -66,7 +72,7 @@ public class Config {
     	for(String nameValuePair: nameValuePairs){
     		if (nameValuePair.toLowerCase().contains(CONFIG_FILE_ARG_NAME.toLowerCase())){
     			int start = nameValuePair.indexOf("=");
-    			configFilename = nameValuePair.substring(start + 1).trim();
+    			configFilename = nameValuePair.substring(start + 1).trim().replace("\"", "");
     			break;
     		}
     	}
@@ -116,9 +122,56 @@ public class Config {
     	}
     }
     
-    public Map<String, Map<String, String[]>> getTemplates(){
-    	return templates;
+    public void loadTemplates() throws Exception{
+    	
+    	Reflections reflections = new Reflections(Config.TEMPLATES_PACKAGE);
+    	Set<Class<? extends EntityTemplate>> template_classes = reflections.getSubTypesOf(EntityTemplate.class);
+    	
+    	
+    	Map<String, String[]> template = null;
+    	String entityType = null;
+    	Set<String> attributes = null;
+    	Map<String, String> template_setters = null;
+    	
+    	for(Class<?> template_class: template_classes){
+    		entityType = ((EntityType)(template_class.getMethod("getEntityType", (Class<?>[])null).invoke(null, (Object[])null))).getType();
+    		template = loadTemplate(template_class);
+    		this.templates.put(entityType, template);
+    		
+    		template_setters = new HashMap<>();
+    		attributes = template.keySet();
+    		for(String attr: attributes){
+    			template_setters.put(attr, "set" + attr.substring(0, 1).toUpperCase() + attr.substring(1));
+    		}
+    		setters.put(entityType, template_setters);
+    	}
+    	
     }
+    
+    private static Map<String, String[]> loadTemplate(Class<?> c){
+    	
+    	Map<String, String[]> data = new HashMap<>();
+    	List<Field> fields = Arrays.asList(c.getDeclaredFields());
+    	
+    	try{
+	    	for(Field field : fields){
+    	        data.put(field.getName(), (String[])field.get(null));
+	    	}
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    	
+    	
+    	return data;
+    }
+
+	public Map<String, Map<String, String[]>> getTemplates() {
+		return templates;
+	}
+
+	public Map<String, Map<String, String>> getSetters() {
+		return setters;
+	}
 
 	public String getFilename() {
 		return filename;
