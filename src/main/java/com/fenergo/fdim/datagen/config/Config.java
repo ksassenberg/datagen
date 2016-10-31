@@ -67,9 +67,10 @@ public class Config {
     		if (nameValuePair.toLowerCase().contains(CONFIG_FILE_ARG_NAME.toLowerCase())){
     			int start = nameValuePair.indexOf("=");
     			configFilename = nameValuePair.substring(start + 1).trim();
+    			break;
     		}
     	}
-    	System.out.println(configFilename);
+
     	return configFilename;
     }
     
