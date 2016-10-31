@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:Configuration xmlns:enums="http://com.fenergo.fdim/ConfigEnums" 
+	xmlns:tns="http://com.fenergo.fdim/Configuration"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://com.fenergo.fdim/Configuration ../../xsd/Configuration.xsd http://com.fenergo.fdim/ConfigEnums ConfigEnums.xsd ">
+  
+	<tns:output_file>C:\Users\User\Desktop\output.xml</tns:output_file>
+	<tns:batch_size>1000</tns:batch_size>
+	<tns:root_entities>
+		<tns:root_entity>
+			<tns:type>LegalEntity</tns:type>
+			<tns:occurences>25000</tns:occurences>
+			<tns:child_entities>
+				<tns:child_entity>
+					<tns:type>Contact</tns:type>
+      				<tns:occurences>1</tns:occurences>
+      			</tns:child_entity>
+		      	<tns:child_entity>
+			      	<tns:type>Address</tns:type>
+			      	<tns:occurences>1</tns:occurences>
+			      	</tns:child_entity>
+		      	<tns:child_entity>
+			      	<tns:type>Association</tns:type>
+			      	<tns:occurences>1</tns:occurences>
+			      </tns:child_entity>
+		      	<tns:child_entity>
+			      	<tns:type>Relationship</tns:type>
+			      	<tns:occurences>1</tns:occurences>
+			 	</tns:child_entity>
+  			</tns:child_entities>
+    	</tns:root_entity>
+		<tns:root_entity>
+  			<tns:type>User</tns:type>
+  			<tns:occurences>1000</tns:occurences>
+		</tns:root_entity>
+		<tns:root_entity>
+  			<tns:type>Lookup</tns:type>
+  			<tns:occurences>25000</tns:occurences>
+		</tns:root_entity>
+  	</tns:root_entities>
+</tns:Configuration>

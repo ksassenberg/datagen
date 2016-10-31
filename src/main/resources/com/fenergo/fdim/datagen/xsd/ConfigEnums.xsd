@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://com.fenergo.fdim/ConfigEnums" xmlns:tns="http://com.fenergo.fdim/ConfigEnums" elementFormDefault="qualified">
+
+	<xs:simpleType name="EntityType" final="restriction" >
+	    <xs:restriction base="xs:string">
+	        <xs:enumeration value="LegalEntity" />
+	        <xs:enumeration value="Lookup" />
+	        <xs:enumeration value="User" />
+	        <xs:enumeration value="Contact" />
+	        <xs:enumeration value="Address" />
+	        <xs:enumeration value="Association" />
+	        <xs:enumeration value="Relationship" />
+	    </xs:restriction>
+	</xs:simpleType>
+
+</xs:schema>

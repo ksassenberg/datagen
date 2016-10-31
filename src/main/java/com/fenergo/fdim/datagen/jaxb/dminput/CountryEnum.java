@@ -28,6 +28,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;enumeration value="Spain"/>
  *     &lt;enumeration value="Hungary"/>
  *     &lt;enumeration value="Czech Republic"/>
+ *     &lt;enumeration value="France"/>
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
@@ -48,7 +49,9 @@ public enum CountryEnum {
     @XmlEnumValue("Hungary")
     HUNGARY("Hungary"),
     @XmlEnumValue("Czech Republic")
-    CZECH_REPUBLIC("Czech Republic");
+    CZECH_REPUBLIC("Czech Republic"),
+    @XmlEnumValue("France")
+    FRANCE("France");
     private final String value;
 
     CountryEnum(String v) {

@@ -83,16 +83,11 @@
         </executions>
   		<configuration>
     	  <mainClass>${main.class}</mainClass>
+    	  <!--
           <arguments>
-          	<argument>C:\Users\User\Desktop\output.xml</argument>
-          	<argument>25000</argument> 	<!-- LE -->
-          	<argument>1000</argument>  	<!-- User -->
-          	<argument>25000</argument> 	<!-- Lookup -->
-          	<argument>1</argument> 		<!-- Address -->
-          	<argument>1</argument> 		<!-- Contact -->
-          	<argument>1</argument> 		<!-- Associations -->
-          	<argument>1</argument> 		<!-- Relationships -->
+          	<argument>1</argument> 
           </arguments>
+          -->
           <systemProperties>
             <systemProperty>
                 <key>file.encoding</key>

@@ -5,15 +5,15 @@ import com.fenergo.fdim.datagen.config.EntityType;
 
 public class AssociationTemplate implements EntityTemplate{
 	public static String[] referenceKey = new String[]{"1136"};
-	public static String[] externalReferenceId = new String[]{"1"};
-	public static String[] entityName = new String[]{"1"};
-	public static String[] associatedEntity = new String[]{"1"};	
-	public static String[] relationship = new String[]{"1"};	
-	public static String[] roleStatus = new String[]{"1"};	
-	public static String[] associationStatus = new String[]{"1"};	
-	public static String[] associationName = new String[]{"1"};	
-	public static String[] registeredState = new String[]{"1"};	
-	public static String[] registeredCountry = new String[]{"1"};
+	public static String[] externalReferenceId = new String[]{"1136"};
+	public static String[] entityName = new String[]{"entityName"};
+	public static String[] associatedEntity = new String[]{"associatedEntity"};	
+	public static String[] relationship = new String[]{"relationship1"};	
+	public static String[] roleStatus = new String[]{"roleStatus"};	
+	public static String[] associationStatus = new String[]{"associationStatus"};	
+	public static String[] associationName = new String[]{"associationName"};	
+	public static String[] registeredState = new String[]{"registeredState"};	
+	public static String[] registeredCountry = new String[]{"registeredCountry"};
 	
 	public static EntityType getEntityType(){
 		return EntityType.ASSOCIATION;

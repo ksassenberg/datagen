@@ -28,10 +28,9 @@ public class App
     {
     	
     	ObjectFactory factory = new ObjectFactory();
-    	Config config = new Config();
+    	Config config = new Config(args);
     	StreamingMarshal<AbstractBaseInputEntityType> sm = new StreamingMarshal<>(AbstractBaseInputEntityType.class);
     	
-    	config.loadArguments(args);
     	loadTemplates(config);
     	
     	sm.open(config.getFilename());
@@ -48,7 +47,7 @@ public class App
     private static void createEntities(Config config, StreamingMarshal<AbstractBaseInputEntityType> sm, ObjectFactory factory, EntityType et, AbstractBaseInputEntityType parent, EntityType[] children) throws Exception{
     	
     	AbstractBaseInputEntityType abiet = (AbstractBaseInputEntityType)factory.getClass().getMethod("create"+et.getType(), (Class<?>[])null).invoke(factory, (Object[])null);
-    	Long num = (Long)config.getClass().getMethod("getNum"+et.getType()+"s", (Class<?>[])null).invoke(config, (Object[])null);
+    	Long num = (Long)config.getClass().getMethod("getNum"+et.getType(), (Class<?>[])null).invoke(config, (Object[])null);
     	
     	Class<?> cl = Class.forName((String)et.getImplemetation());
     	

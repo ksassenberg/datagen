@@ -1,10 +1,22 @@
 package com.fenergo.fdim.datagen.config;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
+
+import com.fenergo.fdim.datagen.jaxb.config.ChildEntityType;
+import com.fenergo.fdim.datagen.jaxb.config.ConfigurationType;
+import com.fenergo.fdim.datagen.jaxb.config.ListOfChildEntityType;
+import com.fenergo.fdim.datagen.jaxb.config.ListOfRootEntityType;
+import com.fenergo.fdim.datagen.jaxb.config.RootEntityType;
+import com.fenergo.fdim.datagen.jaxb.marshaller.ConfigurationManager;
 
 public class Config {
 	public static final String XSI_NAMESPACE_URI = "http://www.w3.org/2001/XMLSchema-instance";
@@ -13,31 +25,91 @@ public class Config {
     public static final String WRAPPER_ELEMENT = "fenergoInput";
     public final static QName _ENTITY_QNAME = new QName(XMLConstants.NULL_NS_URI, "entity");
     
+    private final static String CONFIG_FILE_ARG_NAME = "configfile";
+    private final static String ARG_SEPARATOR = "-"; 
+    
     private Map<String, Map<String, String[]>> templates = new HashMap<>();
     private String filename;
-    private Long numLegalEntitys;
-    private Long numUsers;
-    private Long numLookups;
-    private Long numAddresss;
-    private Long numContacts;
-    private Long numAssociations;
-    private Long numRelationships;
+    private Long batchSize;
+    private Long numLegalEntity;
+    private Long numUser;
+    private Long numLookup;
+    private Long numAddress;
+    private Long numContact;
+    private Long numAssociation;
+    private Long numRelationship;
     
     public Config(){}
     
-    public Config(String[] args){
+    public Config(String[] args) throws JAXBException, IOException{
     	loadArguments(args);
     }
     
-    public void loadArguments(String[] args){
-    	setFilename(args[0]);
-    	setNumLegalEntitys(args[1]);
-    	setNumUsers(args[2]);
-    	setNumLookups(args[3]);
-    	setNumAddresss(args[4]);
-    	setNumContacts(args[5]);
-    	setNumAssociations(args[6]);
-    	setNumRelationships(args[7]);
+    public void loadArguments(String[] args) throws JAXBException, IOException{
+    	if (args!=null && args.length > 0){
+	    	readConfigFile(getconfigFilenameFromArgs(args));
+    	}else{
+    		readConfigFile();
+    	}
+    	
+    }
+    
+    private String getconfigFilenameFromArgs(String[] args){
+    	
+    	String configFilename = null;
+    	String argstr = String.join(" ", Arrays.asList(args));
+    	List<String> nameValuePairs = Arrays.asList(argstr.split(ARG_SEPARATOR));
+    	
+    	for(String nameValuePair: nameValuePairs){
+    		if (nameValuePair.toLowerCase().contains(CONFIG_FILE_ARG_NAME.toLowerCase())){
+    			int start = nameValuePair.indexOf("=");
+    			return nameValuePair.substring(start + 1).trim();
+    		}
+    	}
+    	
+    	return configFilename;
+    }
+    
+    private void readConfigFile() throws JAXBException, IOException{
+    	readConfigFile("com/fenergo/fdim/datagen/config/xml/configuration.xml");
+    }
+
+    private void readConfigFile(String filename) throws JAXBException, IOException{
+    	InputStream stream = this.getClass().getClassLoader().getResourceAsStream(filename);
+    	ConfigurationManager manager = new ConfigurationManager("com.fenergo.fdim.datagen.jaxb.config");
+    	
+    	ConfigurationType config = manager.read(stream);
+    	
+    	this.filename = config.getOutputFile();
+    	this.batchSize = config.getBatchSize();
+    	
+    	ListOfRootEntityType loret = config.getRootEntities();
+    	List<RootEntityType> lroe = loret.getRootEntity();
+    	for (RootEntityType ret: lroe){
+    		if (com.fenergo.fdim.datagen.config.EntityType.LEGAL_ENTITY.getType().equals(ret.getType().value())){
+    			
+    			this.numLegalEntity = ret.getOccurences();
+    			
+    			ListOfChildEntityType locet = ret.getChildEntities();
+    	    	List<ChildEntityType> lcet = locet.getChildEntity();
+    	    	for (ChildEntityType cet: lcet){
+    	    		if (com.fenergo.fdim.datagen.config.EntityType.CONTACT.getType().equals(cet.getType().value())){
+    	    			this.numContact = cet.getOccurences();
+    	    		}else if (com.fenergo.fdim.datagen.config.EntityType.ADDRESS.getType().equals(cet.getType().value())){
+    	    			this.numAddress = cet.getOccurences();
+    	    		}else if (com.fenergo.fdim.datagen.config.EntityType.ASSOCIATION.getType().equals(cet.getType().value())){
+    	    			this.numAssociation = cet.getOccurences();
+    	    		}else if (com.fenergo.fdim.datagen.config.EntityType.RELATIONSHIP.getType().equals(cet.getType().value())){
+    	    			this.numRelationship = cet.getOccurences();
+    	    		}
+    	    	}
+    			
+    		}else if (com.fenergo.fdim.datagen.config.EntityType.LOOKUP.getType().equals(ret.getType().value())){
+    			this.numLookup = ret.getOccurences();
+    		}else if (com.fenergo.fdim.datagen.config.EntityType.USER.getType().equals(ret.getType().value())){
+    			this.numUser = ret.getOccurences();
+    		}
+    	}
     }
     
     public Map<String, Map<String, String[]>> getTemplates(){
@@ -52,88 +124,96 @@ public class Config {
 		this.filename = filename;
 	}
 
-	public Long getNumLegalEntitys() {
-		return numLegalEntitys;
+	public Long getBatchSize() {
+		return batchSize;
 	}
 
-	public void setNumLegalEntitys(Long numLegalEntitys) {
-		this.numLegalEntitys = numLegalEntitys;
-	}
-	
-	public void setNumLegalEntitys(String numLegalEntitys) {
-		this.numLegalEntitys = Long.parseLong(numLegalEntitys);
-	}
-	
-	public Long getNumUsers() {
-		return numUsers;
+	public void setBatchSize(Long batchSize) {
+		this.batchSize = batchSize;
 	}
 
-	public void setNumUsers(Long numUsers) {
-		this.numUsers = numUsers;
-	}
-	
-	public void setNumUsers(String numUsers) {
-		this.numUsers = Long.parseLong(numUsers);
-	}
-	
-	public Long getNumLookups() {
-		return numLookups;
+	public Long getNumLegalEntity() {
+		return numLegalEntity;
 	}
 
-	public void setNumLookups(Long numLookups) {
-		this.numLookups = numLookups;
+	public void setNumLegalEntity(Long numLegalEntity) {
+		this.numLegalEntity = numLegalEntity;
 	}
 	
-	public void setNumLookups(String numLookups) {
-		this.numLookups = Long.parseLong(numLookups);
+	public void setNumLegalEntity(String numLegalEntity) {
+		this.numLegalEntity = Long.parseLong(numLegalEntity);
 	}
 	
-	public Long getNumAddresss() {
-		return numAddresss;
+	public Long getNumUser() {
+		return numUser;
 	}
 
-	public void setNumAddresss(Long numAddresss) {
-		this.numAddresss = numAddresss;
+	public void setNumUser(Long numUser) {
+		this.numUser = numUser;
 	}
 	
-	public void setNumAddresss(String numAddresss) {
-		this.numAddresss = Long.parseLong(numAddresss);
+	public void setNumUser(String numUser) {
+		this.numUser = Long.parseLong(numUser);
 	}
 	
-	public Long getNumContacts() {
-		return numContacts;
+	public Long getNumLookup() {
+		return numLookup;
 	}
 
-	public void setNumContacts(Long numContacts) {
-		this.numContacts = numContacts;
+	public void setNumLookup(Long numLookup) {
+		this.numLookup = numLookup;
 	}
 	
-	public void setNumContacts(String numContacts) {
-		this.numContacts = Long.parseLong(numContacts);
+	public void setNumLookup(String numLookup) {
+		this.numLookup = Long.parseLong(numLookup);
 	}
 	
-	public Long getNumAssociations() {
-		return numAssociations;
+	public Long getNumAddress() {
+		return numAddress;
 	}
 
-	public void setNumAssociations(Long numAssociations) {
-		this.numAssociations = numAssociations;
+	public void setNumAddress(Long numAddress) {
+		this.numAddress = numAddress;
 	}
 	
-	public void setNumAssociations(String numAssociations) {
-		this.numAssociations = Long.parseLong(numAssociations);
+	public void setNumAddress(String numAddress) {
+		this.numAddress = Long.parseLong(numAddress);
 	}
 	
-	public Long getNumRelationships() {
-		return numRelationships;
+	public Long getNumContact() {
+		return numContact;
 	}
 
-	public void setNumRelationships(Long numRelationships) {
-		this.numRelationships = numRelationships;
+	public void setNumContact(Long numContact) {
+		this.numContact = numContact;
 	}
 	
-	public void setNumRelationships(String numRelationships) {
-		this.numRelationships = Long.parseLong(numRelationships);
+	public void setNumContact(String numContact) {
+		this.numContact = Long.parseLong(numContact);
+	}
+	
+	public Long getNumAssociation() {
+		return numAssociation;
+	}
+
+	public void setNumAssociation(Long numAssociation) {
+		this.numAssociation = numAssociation;
+	}
+	
+	public void setNumAssociation(String numAssociation) {
+		this.numAssociation = Long.parseLong(numAssociation);
+	}
+	
+	public Long getNumRelationship() {
+		return numRelationship;
+	}
+
+	public void setNumRelationship(Long numRelationship) {
+		this.numRelationship = numRelationship;
+	}
+	
+	public void setNumRelationship(String numRelationship) {
+		this.numRelationship = Long.parseLong(numRelationship);
 	}
     
 }

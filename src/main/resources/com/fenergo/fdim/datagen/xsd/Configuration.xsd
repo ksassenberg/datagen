@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://com.fenergo.fdim/Configuration" 
+	xmlns:tns="http://com.fenergo.fdim/Configuration" 
+	xmlns:enums="http://com.fenergo.fdim/ConfigEnums"
+	elementFormDefault="qualified">
+
+	<xs:import namespace="http://com.fenergo.fdim/ConfigEnums" schemaLocation="./ConfigEnums.xsd"/>
+
+	<xs:element name="Configuration" type="tns:ConfigurationType"/>
+
+	<xs:complexType name="ConfigurationType">
+	  <xs:sequence>
+	    <xs:element name="output_file" type="xs:string" minOccurs="1" maxOccurs="1"/>
+	    <xs:element name="batch_size" type="xs:long" minOccurs="1" maxOccurs="1"/>
+	    <xs:element name="root_entities" type="tns:ListOfRootEntityType" minOccurs="1" maxOccurs="1"/>
+	  </xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ListOfRootEntityType">
+	  <xs:sequence>
+	    <xs:element name="root_entity" type="tns:RootEntityType" minOccurs="1" maxOccurs="unbounded"/>
+	  </xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="RootEntityType">
+	  <xs:complexContent>
+            <xs:extension base="tns:AbstractEntityType">
+            	<xs:sequence>
+	    			<xs:element name="child_entities" type="tns:ListOfChildEntityType" minOccurs="0" maxOccurs="1"/>
+	  			</xs:sequence>
+            </xs:extension>
+       </xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="ListOfChildEntityType">
+	  <xs:sequence>
+	    <xs:element name="child_entity" type="tns:ChildEntityType" minOccurs="1" maxOccurs="unbounded"/>
+	  </xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ChildEntityType">
+	  <xs:complexContent>
+            <xs:extension base="tns:AbstractEntityType"/>
+       </xs:complexContent>
+	</xs:complexType>
+	
+	 <xs:complexType name="AbstractEntityType" abstract="true">
+        <xs:sequence>
+            <xs:element name="type" type="enums:EntityType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="occurences" type="xs:long" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>
