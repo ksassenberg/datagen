@@ -83,9 +83,9 @@
         </executions>
   		<configuration>
     	  <mainClass>${main.class}</mainClass>
-    	  <!--
+    	  <!-- 
           <arguments>
-          	<argument>1</argument> 
+          	<argument>-configfile=C:\Users\User\workspaces\datagen\datagen\src\main\resources\com\fenergo\fdim\datagen\config\xml\configuration.xml</argument> 
           </arguments>
           -->
           <systemProperties>

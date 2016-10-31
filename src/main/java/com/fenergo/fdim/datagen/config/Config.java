@@ -1,5 +1,7 @@
 package com.fenergo.fdim.datagen.config;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -47,7 +49,8 @@ public class Config {
     
     public void loadArguments(String[] args) throws JAXBException, IOException{
     	if (args!=null && args.length > 0){
-	    	readConfigFile(getconfigFilenameFromArgs(args));
+    		FileInputStream stream = new FileInputStream(new File(getconfigFilenameFromArgs(args)));
+	    	readConfigFile(stream);
     	}else{
     		readConfigFile();
     	}
@@ -63,19 +66,19 @@ public class Config {
     	for(String nameValuePair: nameValuePairs){
     		if (nameValuePair.toLowerCase().contains(CONFIG_FILE_ARG_NAME.toLowerCase())){
     			int start = nameValuePair.indexOf("=");
-    			return nameValuePair.substring(start + 1).trim();
+    			configFilename = nameValuePair.substring(start + 1).trim();
     		}
     	}
-    	
+    	System.out.println(configFilename);
     	return configFilename;
     }
     
     private void readConfigFile() throws JAXBException, IOException{
-    	readConfigFile("com/fenergo/fdim/datagen/config/xml/configuration.xml");
+    	InputStream stream = this.getClass().getClassLoader().getResourceAsStream("com/fenergo/fdim/datagen/config/xml/configuration.xml");
+    	readConfigFile(stream);
     }
 
-    private void readConfigFile(String filename) throws JAXBException, IOException{
-    	InputStream stream = this.getClass().getClassLoader().getResourceAsStream(filename);
+    private void readConfigFile(InputStream stream) throws JAXBException, IOException{
     	ConfigurationManager manager = new ConfigurationManager("com.fenergo.fdim.datagen.jaxb.config");
     	
     	ConfigurationType config = manager.read(stream);
