@@ -1,5 +1,6 @@
 package com.fenergo.fdim.datagen.tasks;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
@@ -46,14 +47,13 @@ public class CreateEntityTask {
 	
 	public void createRootEntites() throws Exception{
     	
-    	AbstractBaseInputEntityType abiet = (AbstractBaseInputEntityType)factory.getClass().getMethod("create"+entityType.getType(), (Class<?>[])null).invoke(factory, (Object[])null);
-    	Long num = (Long)config.getClass().getMethod("getNum"+entityType.getType(), (Class<?>[])null).invoke(config, (Object[])null);
-    	
-    	Class<?> entity_class = Class.forName((String)entityType.getImplemetation());
+    	AbstractBaseInputEntityType abiet = (AbstractBaseInputEntityType)config.getConstructors().get(entityType.getType()).invoke(factory, (Object[])null);
+    	Long num = config.getCounters().get(entityType.getType());
     	
     	Map<String, String[]> template = config.getTemplates().get(entityType.getType());
-    	Map<String, String> setters = config.getSetters().get(entityType.getType());
-    	Set<String> attributes = config.getSetters().get(entityType.getType()).keySet();
+    	Map<String, Method> setters = config.getSetters().get(entityType.getType());
+    	Set<String> attributes = setters.keySet();
+    	String value = null;
     
     	for(long i = 0L; i < num; i++){
     		
@@ -63,13 +63,13 @@ public class CreateEntityTask {
     		
     		for(String attr: attributes){
     			
-    			if (attr.equalsIgnoreCase("referenceKey")){
-    				abiet.setReferenceKey(entityType.getCode() + template.get("referenceKey")[0] + i);
-    			}else if (attr.equalsIgnoreCase("externalReferenceId")){
-    				entity_class.getMethod(setters.get(attr), String.class).invoke(abiet, entityType.getCode() + template.get("referenceKey")[0] + i);
+    			if (attr.equalsIgnoreCase("referenceKey") || attr.equalsIgnoreCase("externalReferenceId")){
+    				value = entityType.getCode() + template.get("referenceKey")[0] + i;
     			}else{
-    				entity_class.getMethod(setters.get(attr), String.class).invoke(abiet, (String)template.get(attr)[0]);
+    				value = (String)template.get(attr)[0];
     			}
+    			
+    			setters.get(attr).invoke(abiet, value);
     		}
     		
 	    	sm.write(abiet);
@@ -86,26 +86,28 @@ public class CreateEntityTask {
 	
 	public void createChildEntites() throws Exception{
     	
-    	AbstractBaseInputEntityType abiet = (AbstractBaseInputEntityType)factory.getClass().getMethod("create"+entityType.getType(), (Class<?>[])null).invoke(factory, (Object[])null);
-    	Long num = (Long)config.getClass().getMethod("getNum"+entityType.getType(), (Class<?>[])null).invoke(config, (Object[])null);
-    	
-    	Class<?> entity_class = Class.forName((String)entityType.getImplemetation());
+		AbstractBaseInputEntityType abiet = (AbstractBaseInputEntityType)config.getConstructors().get(entityType.getType()).invoke(factory, (Object[])null);
+    	Long num = config.getCounters().get(entityType.getType());
     	
     	Map<String, String[]> template = config.getTemplates().get(entityType.getType());
-    	Map<String, String> setters = config.getSetters().get(entityType.getType());
-    	Set<String> attributes = config.getSetters().get(entityType.getType()).keySet();
+    	Map<String, Method> setters = config.getSetters().get(entityType.getType());
+    	Set<String> attributes = setters.keySet();
+    	String value = null;
     
     	for(long i = 0L; i < num; i++){
     		
     		for(String attr: attributes){
     			
     			if (attr.equalsIgnoreCase("referenceKey")){
-    					abiet.setReferenceKey(parent.getReferenceKey());
+    				value = parent.getReferenceKey();
     			}else if (attr.equalsIgnoreCase("externalReferenceId")){
-    				entity_class.getMethod(setters.get(attr), String.class).invoke(abiet, parent.getReferenceKey() + entityType.getCode() + i);
+    				value = parent.getReferenceKey() + entityType.getCode() + i;
     			}else{
-    				entity_class.getMethod(setters.get(attr), String.class).invoke(abiet, (String)template.get(attr)[0]);
+    				value = (String)template.get(attr)[0];
     			}
+    			
+    			setters.get(attr).invoke(abiet, value);
+    			
     		}
     		
 	    	sm.write(abiet);

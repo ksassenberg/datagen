@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +39,9 @@ public class Config {
     private final static String ARG_SEPARATOR = "-"; 
     
     private Map<String, Map<String, String[]>> templates = new HashMap<>();
-    private Map<String, Map<String, String>> setters = new HashMap<>();
+    private Map<String, Map<String, Method>> setters = new HashMap<>();
+    private Map<String, Method> constructors = new HashMap<>();
+    private Map<String, Long> counters = new HashMap<>();
     
     private ObjectFactory factory = null;
     StreamingMarshal<AbstractBaseInputEntityType> sm = null;
@@ -138,23 +141,28 @@ public class Config {
     	Reflections reflections = new Reflections(Config.TEMPLATES_PACKAGE);
     	Set<Class<? extends EntityTemplate>> template_classes = reflections.getSubTypesOf(EntityTemplate.class);
     	
-    	
-    	Map<String, String[]> template = null;
-    	String entityType = null;
+    	EntityType entityType = null;
+    	Class<?> entity_class = null;
+    	String entityTypeValue = null;
     	Set<String> attributes = null;
-    	Map<String, String> template_setters = null;
+    	Map<String, Method> template_setters = null;
+    	Map<String, String[]> template = null;
     	
     	for(Class<?> template_class: template_classes){
-    		entityType = ((EntityType)(template_class.getMethod("getEntityType", (Class<?>[])null).invoke(null, (Object[])null))).getType();
+    		entityType = (EntityType)(template_class.getMethod("getEntityType", (Class<?>[])null).invoke(null, (Object[])null));
+    		entityTypeValue = entityType.getType();
+    		entity_class = Class.forName((String)entityType.getImplemetation());
     		template = loadTemplate(template_class);
-    		this.templates.put(entityType, template);
+    		this.templates.put(entityTypeValue, template);
     		
     		template_setters = new HashMap<>();
     		attributes = template.keySet();
     		for(String attr: attributes){
-    			template_setters.put(attr, "set" + attr.substring(0, 1).toUpperCase() + attr.substring(1));
+    			template_setters.put(attr, entity_class.getMethod("set" + attr.substring(0, 1).toUpperCase() + attr.substring(1), String.class));
     		}
-    		setters.put(entityType, template_setters);
+    		setters.put(entityTypeValue, template_setters);
+    		constructors.put(entityTypeValue, factory.getClass().getMethod("create"+entityType.getType(), (Class<?>[])null));
+    		counters.put(entityTypeValue, (Long)Config.class.getMethod("getNum"+entityType.getType(), (Class<?>[])null).invoke(this, (Object[])null));  		
     	}
     	
     }
@@ -192,7 +200,7 @@ public class Config {
 		return templates;
 	}
 
-	public Map<String, Map<String, String>> getSetters() {
+	public Map<String, Map<String, Method>> getSetters() {
 		return setters;
 	}
 
@@ -302,6 +310,14 @@ public class Config {
 
 	public StreamingMarshal<AbstractBaseInputEntityType> getSm() {
 		return sm;
+	}
+
+	public Map<String, Method> getConstructors() {
+		return constructors;
+	}
+
+	public Map<String, Long> getCounters() {
+		return counters;
 	}
 	
 	
