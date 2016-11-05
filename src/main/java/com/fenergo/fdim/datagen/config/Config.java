@@ -22,7 +22,10 @@ import com.fenergo.fdim.datagen.jaxb.config.ConfigurationType;
 import com.fenergo.fdim.datagen.jaxb.config.ListOfChildEntityType;
 import com.fenergo.fdim.datagen.jaxb.config.ListOfRootEntityType;
 import com.fenergo.fdim.datagen.jaxb.config.RootEntityType;
+import com.fenergo.fdim.datagen.jaxb.dminput.AbstractBaseInputEntityType;
+import com.fenergo.fdim.datagen.jaxb.dminput.ObjectFactory;
 import com.fenergo.fdim.datagen.jaxb.marshaller.ConfigurationManager;
+import com.fenergo.fdim.datagen.jaxb.marshaller.StreamingMarshal;
 
 public class Config {
 	public static final String XSI_NAMESPACE_URI = "http://www.w3.org/2001/XMLSchema-instance";
@@ -37,6 +40,10 @@ public class Config {
     private Map<String, Map<String, String[]>> templates = new HashMap<>();
     private Map<String, Map<String, String>> setters = new HashMap<>();
     
+    private ObjectFactory factory = null;
+    StreamingMarshal<AbstractBaseInputEntityType> sm = null;
+	
+    
     private String filename;
     private Long batchSize;
     private Long numLegalEntity;
@@ -47,9 +54,13 @@ public class Config {
     private Long numAssociation;
     private Long numRelationship;
     
-    public Config(){}
+    public Config() throws JAXBException, IOException{
+    	factory = new ObjectFactory();
+    	sm = new StreamingMarshal<>(AbstractBaseInputEntityType.class);
+    }
     
     public Config(String[] args) throws JAXBException, IOException{
+    	this();
     	loadArguments(args);
     }
     
@@ -164,6 +175,18 @@ public class Config {
     	
     	return data;
     }
+    
+    public void start() throws Exception{
+    	if (sm != null){
+    		sm.open(getFilename());
+    	}
+    }
+    
+    public void finish() throws Exception{
+    	if (sm != null){
+    		sm.close();
+    	}
+    }
 
 	public Map<String, Map<String, String[]>> getTemplates() {
 		return templates;
@@ -272,5 +295,15 @@ public class Config {
 	public void setNumRelationship(String numRelationship) {
 		this.numRelationship = Long.parseLong(numRelationship);
 	}
+
+	public ObjectFactory getFactory() {
+		return factory;
+	}
+
+	public StreamingMarshal<AbstractBaseInputEntityType> getSm() {
+		return sm;
+	}
+	
+	
     
 }
