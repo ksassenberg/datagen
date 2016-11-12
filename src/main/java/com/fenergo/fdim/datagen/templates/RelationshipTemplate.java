@@ -1,7 +1,7 @@
 package com.fenergo.fdim.datagen.templates;
 
 import com.fenergo.fdim.datagen.config.EntityTemplate;
-import com.fenergo.fdim.datagen.config.EntityType;
+import com.fenergo.fdim.datagen.config.AppEntityType;
 
 public class RelationshipTemplate implements EntityTemplate{
 	public static String[] referenceKey = new String[]{"1199"};
@@ -21,7 +21,7 @@ public class RelationshipTemplate implements EntityTemplate{
 	public static String[] homePhone = new String[]{"homePhone"};
 	public static String[] isPrimaryRelationship = new String[]{"true"};
 	
-	public static EntityType getEntityType(){
-		return EntityType.RELATIONSHIP;
+	public static AppEntityType getEntityType(){
+		return AppEntityType.RELATIONSHIP;
 	}
 }

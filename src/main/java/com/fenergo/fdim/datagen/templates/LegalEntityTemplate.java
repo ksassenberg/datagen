@@ -1,7 +1,7 @@
 package com.fenergo.fdim.datagen.templates;
 
 import com.fenergo.fdim.datagen.config.EntityTemplate;
-import com.fenergo.fdim.datagen.config.EntityType;
+import com.fenergo.fdim.datagen.config.AppEntityType;
 
 public class LegalEntityTemplate implements EntityTemplate{
 	public static String[] referenceKey = new String[]{"1136"};
@@ -17,7 +17,7 @@ public class LegalEntityTemplate implements EntityTemplate{
 	public static String[] addressLine1 = new String[]{"addressLine1"};
 	public static String[] bankJurisdiction = new String[]{"bankJurisdiction"};
 	
-	public static EntityType getEntityType(){
-		return EntityType.LEGAL_ENTITY;
+	public static AppEntityType getEntityType(){
+		return AppEntityType.LEGAL_ENTITY;
 	}
 }

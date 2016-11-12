@@ -1,7 +1,7 @@
 package com.fenergo.fdim.datagen.templates;
 
 import com.fenergo.fdim.datagen.config.EntityTemplate;
-import com.fenergo.fdim.datagen.config.EntityType;
+import com.fenergo.fdim.datagen.config.AppEntityType;
 
 public class ContactTemplate implements EntityTemplate{
 	public static String[] referenceKey = new String[]{"1136"};
@@ -19,7 +19,7 @@ public class ContactTemplate implements EntityTemplate{
 	public static String[] fax = new String[]{"3535345545"};
 	public static String[] isPrimaryContact = new String[]{"true"};
 	
-	public static EntityType getEntityType(){
-		return EntityType.CONTACT;
+	public static AppEntityType getEntityType(){
+		return AppEntityType.CONTACT;
 	}
 }

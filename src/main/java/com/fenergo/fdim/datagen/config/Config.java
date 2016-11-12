@@ -23,17 +23,20 @@ import com.fenergo.fdim.datagen.jaxb.config.ConfigurationType;
 import com.fenergo.fdim.datagen.jaxb.config.ListOfChildEntityType;
 import com.fenergo.fdim.datagen.jaxb.config.ListOfRootEntityType;
 import com.fenergo.fdim.datagen.jaxb.config.RootEntityType;
-import com.fenergo.fdim.datagen.jaxb.dminput.AbstractBaseInputEntityType;
 import com.fenergo.fdim.datagen.jaxb.dminput.ObjectFactory;
 import com.fenergo.fdim.datagen.jaxb.marshaller.ConfigurationManager;
-import com.fenergo.fdim.datagen.jaxb.marshaller.StreamingMarshal;
 
 public class Config {
 	public static final String XSI_NAMESPACE_URI = "http://www.w3.org/2001/XMLSchema-instance";
     public static final String XSI_NAMESPACE_PREFIX = "xsi";
     public static final String TEMPLATES_PACKAGE = "com.fenergo.fdim.datagen.templates";
+    public static final String CONFIG_ENTITY_PACKAGE = "com.fenergo.fdim.datagen.jaxb.config";
     public static final String WRAPPER_ELEMENT = "fenergoInput";
     public final static QName _ENTITY_QNAME = new QName(XMLConstants.NULL_NS_URI, "entity");
+    
+    public static final int BUFFER_SIZE = 8192;
+    
+    public final static String EXCESS_NAMESPACE = "xmlns:" + Config.XSI_NAMESPACE_PREFIX + "=\\\"" + Config.XSI_NAMESPACE_URI.replaceAll("/", "\\\\/") + "\\\"";
     
     private final static String CONFIG_FILE_ARG_NAME = "configfile";
     private final static String ARG_SEPARATOR = "-"; 
@@ -44,9 +47,8 @@ public class Config {
     private Map<String, Long> counters = new HashMap<>();
     
     private ObjectFactory factory = null;
-    StreamingMarshal<AbstractBaseInputEntityType> sm = null;
 	
-    
+    private ConfigurationType config;
     private String filename;
     private Long batchSize;
     private Long numLegalEntity;
@@ -59,7 +61,6 @@ public class Config {
     
     public Config() throws JAXBException, IOException{
     	factory = new ObjectFactory();
-    	sm = new StreamingMarshal<>(AbstractBaseInputEntityType.class);
     }
     
     public Config(String[] args) throws JAXBException, IOException{
@@ -102,7 +103,7 @@ public class Config {
     private void readConfigFile(InputStream stream) throws JAXBException, IOException{
     	ConfigurationManager manager = new ConfigurationManager("com.fenergo.fdim.datagen.jaxb.config");
     	
-    	ConfigurationType config = manager.read(stream);
+    	config = manager.read(stream);
     	
     	this.filename = config.getOutputFile();
     	this.batchSize = config.getBatchSize();
@@ -110,27 +111,27 @@ public class Config {
     	ListOfRootEntityType loret = config.getRootEntities();
     	List<RootEntityType> lroe = loret.getRootEntity();
     	for (RootEntityType ret: lroe){
-    		if (com.fenergo.fdim.datagen.config.EntityType.LEGAL_ENTITY.getType().equals(ret.getType().value())){
+    		if (com.fenergo.fdim.datagen.config.AppEntityType.LEGAL_ENTITY.getType().equals(ret.getType().value())){
     			
     			this.numLegalEntity = ret.getOccurences();
     			
     			ListOfChildEntityType locet = ret.getChildEntities();
     	    	List<ChildEntityType> lcet = locet.getChildEntity();
     	    	for (ChildEntityType cet: lcet){
-    	    		if (com.fenergo.fdim.datagen.config.EntityType.CONTACT.getType().equals(cet.getType().value())){
+    	    		if (com.fenergo.fdim.datagen.config.AppEntityType.CONTACT.getType().equals(cet.getType().value())){
     	    			this.numContact = cet.getOccurences();
-    	    		}else if (com.fenergo.fdim.datagen.config.EntityType.ADDRESS.getType().equals(cet.getType().value())){
+    	    		}else if (com.fenergo.fdim.datagen.config.AppEntityType.ADDRESS.getType().equals(cet.getType().value())){
     	    			this.numAddress = cet.getOccurences();
-    	    		}else if (com.fenergo.fdim.datagen.config.EntityType.ASSOCIATION.getType().equals(cet.getType().value())){
+    	    		}else if (com.fenergo.fdim.datagen.config.AppEntityType.ASSOCIATION.getType().equals(cet.getType().value())){
     	    			this.numAssociation = cet.getOccurences();
-    	    		}else if (com.fenergo.fdim.datagen.config.EntityType.RELATIONSHIP.getType().equals(cet.getType().value())){
+    	    		}else if (com.fenergo.fdim.datagen.config.AppEntityType.RELATIONSHIP.getType().equals(cet.getType().value())){
     	    			this.numRelationship = cet.getOccurences();
     	    		}
     	    	}
     			
-    		}else if (com.fenergo.fdim.datagen.config.EntityType.LOOKUP.getType().equals(ret.getType().value())){
+    		}else if (com.fenergo.fdim.datagen.config.AppEntityType.LOOKUP.getType().equals(ret.getType().value())){
     			this.numLookup = ret.getOccurences();
-    		}else if (com.fenergo.fdim.datagen.config.EntityType.USER.getType().equals(ret.getType().value())){
+    		}else if (com.fenergo.fdim.datagen.config.AppEntityType.USER.getType().equals(ret.getType().value())){
     			this.numUser = ret.getOccurences();
     		}
     	}
@@ -141,7 +142,7 @@ public class Config {
     	Reflections reflections = new Reflections(Config.TEMPLATES_PACKAGE);
     	Set<Class<? extends EntityTemplate>> template_classes = reflections.getSubTypesOf(EntityTemplate.class);
     	
-    	EntityType entityType = null;
+    	AppEntityType entityType = null;
     	Class<?> entity_class = null;
     	String entityTypeValue = null;
     	Set<String> attributes = null;
@@ -149,7 +150,7 @@ public class Config {
     	Map<String, String[]> template = null;
     	
     	for(Class<?> template_class: template_classes){
-    		entityType = (EntityType)(template_class.getMethod("getEntityType", (Class<?>[])null).invoke(null, (Object[])null));
+    		entityType = (AppEntityType)(template_class.getMethod("getEntityType", (Class<?>[])null).invoke(null, (Object[])null));
     		entityTypeValue = entityType.getType();
     		entity_class = Class.forName((String)entityType.getImplemetation());
     		template = loadTemplate(template_class);
@@ -182,18 +183,6 @@ public class Config {
     	
     	
     	return data;
-    }
-    
-    public void start() throws Exception{
-    	if (sm != null){
-    		sm.open(getFilename());
-    	}
-    }
-    
-    public void finish() throws Exception{
-    	if (sm != null){
-    		sm.close();
-    	}
     }
 
 	public Map<String, Map<String, String[]>> getTemplates() {
@@ -308,10 +297,6 @@ public class Config {
 		return factory;
 	}
 
-	public StreamingMarshal<AbstractBaseInputEntityType> getSm() {
-		return sm;
-	}
-
 	public Map<String, Method> getConstructors() {
 		return constructors;
 	}
@@ -320,6 +305,8 @@ public class Config {
 		return counters;
 	}
 	
-	
+	public ConfigurationType getConfigType(){
+		return config;
+	}
     
 }

@@ -1,5 +1,5 @@
 package com.fenergo.fdim.datagen.config;
 
 public interface EntityTemplate {
-	public static EntityType getEntityType(){return null;}
+	public static AppEntityType getEntityType(){return null;}
 }

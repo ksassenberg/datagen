@@ -1,7 +1,7 @@
 package com.fenergo.fdim.datagen.templates;
 
 import com.fenergo.fdim.datagen.config.EntityTemplate;
-import com.fenergo.fdim.datagen.config.EntityType;
+import com.fenergo.fdim.datagen.config.AppEntityType;
 
 public class AddressTemplate implements EntityTemplate{
 	public static String[] referenceKey = new String[]{"1136"};
@@ -14,7 +14,7 @@ public class AddressTemplate implements EntityTemplate{
 	public static String[] stateCounty = new String[]{""};
 	public static String[] postalZipCode = new String[]{"0000"};
 	
-	public static EntityType getEntityType(){
-		return EntityType.ADDRESS;
+	public static AppEntityType getEntityType(){
+		return AppEntityType.ADDRESS;
 	}
 }

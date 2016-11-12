@@ -48,6 +48,7 @@
         <xs:sequence>
             <xs:element name="type" type="enums:EntityType" minOccurs="1" maxOccurs="1"/>
             <xs:element name="occurences" type="xs:long" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="cache_size" type="xs:long" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
 

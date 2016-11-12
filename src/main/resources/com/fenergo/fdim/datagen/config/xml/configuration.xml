@@ -10,32 +10,39 @@
 		<tns:root_entity>
 			<tns:type>LegalEntity</tns:type>
 			<tns:occurences>100000</tns:occurences>
+      		<tns:cache_size>1</tns:cache_size>
 			<tns:child_entities>
 				<tns:child_entity>
 					<tns:type>Contact</tns:type>
       				<tns:occurences>1</tns:occurences>
+      				<tns:cache_size>1</tns:cache_size>
       			</tns:child_entity>
 		      	<tns:child_entity>
 			      	<tns:type>Address</tns:type>
 			      	<tns:occurences>1</tns:occurences>
+      				<tns:cache_size>1</tns:cache_size>
 			      	</tns:child_entity>
 		      	<tns:child_entity>
 			      	<tns:type>Association</tns:type>
 			      	<tns:occurences>1</tns:occurences>
+      				<tns:cache_size>1</tns:cache_size>
 			      </tns:child_entity>
 		      	<tns:child_entity>
 			      	<tns:type>Relationship</tns:type>
 			      	<tns:occurences>1</tns:occurences>
+      				<tns:cache_size>1</tns:cache_size>
 			 	</tns:child_entity>
   			</tns:child_entities>
     	</tns:root_entity>
 		<tns:root_entity>
   			<tns:type>User</tns:type>
-  			<tns:occurences>10</tns:occurences>
+  			<tns:occurences>10000</tns:occurences>
+      		<tns:cache_size>1</tns:cache_size>
 		</tns:root_entity>
 		<tns:root_entity>
   			<tns:type>Lookup</tns:type>
-  			<tns:occurences>10</tns:occurences>
+  			<tns:occurences>100000</tns:occurences>
+      		<tns:cache_size>1</tns:cache_size>
 		</tns:root_entity>
   	</tns:root_entities>
 </tns:Configuration>

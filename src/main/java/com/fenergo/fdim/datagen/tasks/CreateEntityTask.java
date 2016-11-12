@@ -1,119 +1,123 @@
 package com.fenergo.fdim.datagen.tasks;
 
-import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
 
+import com.fenergo.fdim.datagen.cache.EntityCache;
+import com.fenergo.fdim.datagen.config.AppEntityType;
 import com.fenergo.fdim.datagen.config.Config;
-import com.fenergo.fdim.datagen.config.EntityType;
 import com.fenergo.fdim.datagen.jaxb.dminput.AbstractBaseInputEntityType;
 import com.fenergo.fdim.datagen.jaxb.dminput.ObjectFactory;
-import com.fenergo.fdim.datagen.jaxb.marshaller.StreamingMarshal;
 
 public class CreateEntityTask {
 
 	private static long rootBatchSize = 100;
 	
 	private Config config = null;
-	private StreamingMarshal<AbstractBaseInputEntityType> sm = null; 
 	private ObjectFactory factory = null;
-	private EntityType entityType = null;
+	private AppEntityType entityType = null;
 	private AbstractBaseInputEntityType parent = null;
-	private EntityType[] children = null;
+	private AppEntityType[] children = null;
+	private EntityCache ec = null;
 	
-	public static CreateEntityTask create(Config config, EntityType et, AbstractBaseInputEntityType parent, EntityType[] children){
-		return new CreateEntityTask(config, et, parent, children);
+	private String REGEX1 = "ReferenceKey=\"[^\"]+\"";
+	private String REGEX2 = "ExternalReferenceId=\"[^\"]+\"";
+	
+	public static CreateEntityTask create(Config config, AppEntityType et, AbstractBaseInputEntityType parent, AppEntityType[] children, 
+	    	EntityCache ec){
+		return new CreateEntityTask(config, et, parent, children, ec);
 	}
 	
-	private CreateEntityTask(Config config, EntityType et, AbstractBaseInputEntityType parent, EntityType[] children){
+	private CreateEntityTask(Config config, AppEntityType et, AbstractBaseInputEntityType parent, AppEntityType[] children, EntityCache ec){
 		this.config = config;
-		this.sm = config.getSm(); 
 		this.factory = config.getFactory();
 		this.entityType = et;
 		this.parent = parent;
 		this.children = children;
+		this.ec = ec;
 	}
 	
-	public void start() throws Exception{
+	public List<String> start() throws Exception{
     	
     		if (entityType.isRoot()){
-    			createRootEntites();
+    			return createRootEntites();
     		}else{
-    			createChildEntites();
+    			return createChildEntites();
     		}
     		
 	}
 	
-	public void createRootEntites() throws Exception{
+	public List<String> createRootEntites() throws Exception{
     	
     	AbstractBaseInputEntityType abiet = (AbstractBaseInputEntityType)config.getConstructors().get(entityType.getType()).invoke(factory, (Object[])null);
     	Long num = config.getCounters().get(entityType.getType());
     	
     	Map<String, String[]> template = config.getTemplates().get(entityType.getType());
-    	Map<String, Method> setters = config.getSetters().get(entityType.getType());
-    	Set<String> attributes = setters.keySet();
     	String value = null;
-    
+    	String entity = null;
+    	
+    	List<String> localCache = ec.getEntityCache(entityType);
+    	
+    	List<String> entities = new ArrayList<>();
+    	
     	for(long i = 0L; i < num; i++){
     		
     		if (entityType.isRoot() && ((i % rootBatchSize) == 0)){
     			System.out.println("-->" + entityType.getType() + ": " + Math.round(i/((double)num)*10000.0)/100.0 + "% Processed...");
     		}
     		
-    		for(String attr: attributes){
-    			
-    			if (attr.equalsIgnoreCase("referenceKey") || attr.equalsIgnoreCase("externalReferenceId")){
-    				value = entityType.getCode() + template.get("referenceKey")[0] + i;
-    			}else{
-    				value = (String)template.get(attr)[0];
-    			}
-    			
-    			setters.get(attr).invoke(abiet, value);
-    		}
+    		entity = getRandomCacheValue(localCache) + ""; // local copy
+    		value = entityType.getCode() + template.get("referenceKey")[0] + i;
+    		entity = entity.replaceAll(REGEX1, "ReferenceKey=\"" + value + "\"");
+    		entity = entity.replaceAll(REGEX2, "ExternalReferenceId=\"" + value + "\"");
+    		entities.add(entity);
     		
-	    	sm.write(abiet);
-	    	
+    		abiet.setReferenceKey(value);
+	    		    	
 	    	if (children!=null && children.length > 0){
-		    	for(EntityType child: Arrays.asList(children)){
-		    		CreateEntityTask.create(config, child, abiet, null).start();
+		    	for(AppEntityType child: Arrays.asList(children)){
+		    		entities.addAll(CreateEntityTask.create(config, child, abiet, null, ec).start());
 		    	}
 	    	}
 	    	
     	}
 
+    	return entities;
+    	
 	}
 	
-	public void createChildEntites() throws Exception{
+	public List<String> createChildEntites() throws Exception{
     	
-		AbstractBaseInputEntityType abiet = (AbstractBaseInputEntityType)config.getConstructors().get(entityType.getType()).invoke(factory, (Object[])null);
-    	Long num = config.getCounters().get(entityType.getType());
-    	
-    	Map<String, String[]> template = config.getTemplates().get(entityType.getType());
-    	Map<String, Method> setters = config.getSetters().get(entityType.getType());
-    	Set<String> attributes = setters.keySet();
+		Long num = config.getCounters().get(entityType.getType());
     	String value = null;
+    	String entity = null;
+    	
+    	List<String> localCache = ec.getEntityCache(entityType);
+    	
+    	List<String> entities = new ArrayList<>();
     
     	for(long i = 0L; i < num; i++){
     		
-    		for(String attr: attributes){
-    			
-    			if (attr.equalsIgnoreCase("referenceKey")){
-    				value = parent.getReferenceKey();
-    			}else if (attr.equalsIgnoreCase("externalReferenceId")){
-    				value = parent.getReferenceKey() + entityType.getCode() + i;
-    			}else{
-    				value = (String)template.get(attr)[0];
-    			}
-    			
-    			setters.get(attr).invoke(abiet, value);
-    			
-    		}
-    		
-	    	sm.write(abiet);
+    		entity = getRandomCacheValue(localCache) + ""; // local copy
+    		value = parent.getReferenceKey();
+    		entity = entity.replaceAll(REGEX1, "ReferenceKey=\"" + value + "\"");
+    		value = parent.getReferenceKey() + entityType.getCode() + i;
+    		entity = entity.replaceAll(REGEX2, "ExternalReferenceId=\"" + value + "\"");
+    		entities.add(entity);
 	    	
     	}
+    	
+    	return entities;
 
 	}
+	
+	private String getRandomCacheValue(List<String> values){
+		int size = values.size();
+		return values.get(ThreadLocalRandom.current().nextInt(0, size));
+	}
+	
 
 }
