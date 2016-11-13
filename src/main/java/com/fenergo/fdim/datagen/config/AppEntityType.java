@@ -1,6 +1,12 @@
 package com.fenergo.fdim.datagen.config;
 
-public enum EntityType {
+import java.util.Set;
+
+import org.reflections.Reflections;
+
+import com.fenergo.fdim.datagen.jaxb.config.EntityType;
+
+public enum AppEntityType {
 	
 	LEGAL_ENTITY("LegalEntity", "com.fenergo.fdim.datagen.jaxb.templates.LegalEntityTemplate", "com.fenergo.fdim.datagen.jaxb.dminput.LegalEntity", true),
 	USER("User", "com.fenergo.fdim.datagen.jaxb.templates.UserTemplate", "com.fenergo.fdim.datagen.jaxb.dminput.User", true),
@@ -16,7 +22,7 @@ public enum EntityType {
 	private final String implemetation;
 	private final boolean root;
 	
-	EntityType(String type, String template, String implementation, boolean root){
+	AppEntityType(String type, String template, String implementation, boolean root){
 		this.type = type;
 		this.template = template;
 		this.implemetation = implementation;
@@ -42,5 +48,20 @@ public enum EntityType {
 	public boolean isRoot() {
 		return root;
 	}
+	
+	public static AppEntityType fromValue(String v) {
+        for (AppEntityType c: AppEntityType.values()) {
+            if (c.type.equals(v)) {
+                return c;
+            }
+        }
+        throw new IllegalArgumentException(v);
+    }
+	
+    public EntityType convert(){
+    	
+    	return EntityType.fromValue(this.type);
+    
+    }
 	
 }

@@ -20,6 +20,7 @@
     <maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
     <reflections.version>0.9.10</reflections.version>
     <guava.version>19.0</guava.version>
+    <unix4j.version>0.4</unix4j.version>
   </properties>
 
   <dependencies>
@@ -38,6 +39,11 @@
 	    <groupId>com.google.guava</groupId>
 	    <artifactId>guava</artifactId>
 	    <version>${guava.version}</version>
+	</dependency>
+	<dependency>
+    	<groupId>org.unix4j</groupId>
+    	<artifactId>unix4j-command</artifactId>
+    	<version>${unix4j.version}</version>
 	</dependency>
   </dependencies>
   

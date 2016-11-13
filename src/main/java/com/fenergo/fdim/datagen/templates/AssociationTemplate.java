@@ -1,7 +1,7 @@
 package com.fenergo.fdim.datagen.templates;
 
 import com.fenergo.fdim.datagen.config.EntityTemplate;
-import com.fenergo.fdim.datagen.config.EntityType;
+import com.fenergo.fdim.datagen.config.AppEntityType;
 
 public class AssociationTemplate implements EntityTemplate{
 	public static String[] referenceKey = new String[]{"1136"};
@@ -15,7 +15,7 @@ public class AssociationTemplate implements EntityTemplate{
 	public static String[] registeredState = new String[]{"registeredState"};	
 	public static String[] registeredCountry = new String[]{"registeredCountry"};
 	
-	public static EntityType getEntityType(){
-		return EntityType.ASSOCIATION;
+	public static AppEntityType getEntityType(){
+		return AppEntityType.ASSOCIATION;
 	}
 }
