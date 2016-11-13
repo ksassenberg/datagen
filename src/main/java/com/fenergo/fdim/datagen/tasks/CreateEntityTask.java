@@ -20,8 +20,6 @@ public class CreateEntityTask {
 	private ObjectFactory factory = null;
 	private AppEntityType entityType = null;
 	private AbstractBaseInputEntityType parent = null;
-	private EntityType[] children = null;
-	private StringBuilder results = null;
 	private AppEntityType[] children = null;
 	private EntityCache ec = null;
 	
