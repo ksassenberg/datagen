@@ -33,13 +33,16 @@ public class Config {
     public static final String CONFIG_ENTITY_PACKAGE = "com.fenergo.fdim.datagen.jaxb.config";
     public static final String WRAPPER_ELEMENT = "fenergoInput";
     public final static QName _ENTITY_QNAME = new QName(XMLConstants.NULL_NS_URI, "entity");
+    public final static int ROOT_THREAD_POOL_SIZE = 5;
     
     public static final int BUFFER_SIZE = 8192;
     
     public final static String EXCESS_NAMESPACE = "xmlns:" + Config.XSI_NAMESPACE_PREFIX + "=\\\"" + Config.XSI_NAMESPACE_URI.replaceAll("/", "\\\\/") + "\\\"";
     
     private final static String CONFIG_FILE_ARG_NAME = "configfile";
-    private final static String ARG_SEPARATOR = "-"; 
+    private final static String ARG_SEPARATOR = "-";
+    
+    
     
     private Map<String, Map<String, String[]>> templates = new HashMap<>();
     private Map<String, Map<String, Method>> setters = new HashMap<>();
